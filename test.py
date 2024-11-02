@@ -10,12 +10,14 @@ thread_count = int(input("Gönderilecek istek sayısını girin: "))
 def load_proxies(file_path):
     try:
         with open(file_path, 'r') as file:
-            proxies = file.read().splitlines()
+        
+            proxies = [f"http://{line.strip()}" for line in file if line.strip()]
         return proxies
     except FileNotFoundError:
         print("Proxy listesi dosyası bulunamadı.")
         return []
 
+# Proxy listesini yükle
 proxy_list = load_proxies(proxy_file_path)
 
 def send_request_with_proxy():
@@ -31,6 +33,7 @@ def send_request_with_proxy():
         except requests.exceptions.RequestException as e:
             print(f"Hata: {e} | Proxy: {proxy['http']}")
 
+# Thread başlatma
 threads = []
 
 for i in range(thread_count):
@@ -40,4 +43,3 @@ for i in range(thread_count):
 
 for t in threads:
     t.join()
-  
